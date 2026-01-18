@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>Periodic Table</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+ h1{
+  margin:15px 0;
+  font-size:32px;
+  color:#2c3e50;
+  text-shadow:1px 1px 2px rgba(0,0,0,0.1);
+}
+
+.el .sym{
+  font-weight:600;
+}
+
+.el .name{
+  font-weight:300;
+}
+
+body{
+  font-family: 'Prompt', sans-serif;
+  background: linear-gradient(135deg,#f5f7fa,#e4ecf5);
+  text-align:center;
+  margin:0;
+  padding-bottom:40px;
+}
+
+h1{margin:10px}
+.periodic{
+  display:grid;
+  grid-template-columns:repeat(18,70px);
+  gap:4px;
+  justify-content:center;
+}
+.el{
+  border:1px solid #333;
+  height:95px;
+  padding:3px;
+  box-sizing:border-box;
+  font-size:10px;
+  cursor:pointer;
+  border-radius:8px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.el:hover{
+  transform: scale(1.08);
+  box-shadow:0 6px 12px rgba(0,0,0,0.3);
+  z-index:5;
+}
+.el{
+  cursor:pointer;
+}
+.no{font-size:10px;text-align:left}
+.sym{font-size:22px;font-weight:bold}
+.w{font-size:10px}
+.name{font-size:10px}
+
+.alkali{background:#ffb3b3}
+.alkaline{background:#ffd9b3}
+.transition{background:#ffffb3}
+.metalloid{background:#ccffcc}
+.nonmetal{background:#b3e5ff}
+.halogen{background:#b3ffff}
+.noble{background:#e1bee7}
+.lanth{background:#f8bbd0}
+.actin{background:#d1c4e9}
+
+.label{
+  grid-column:1 / span 18;
+  text-align:left;
+  font-weight:bold;
+  margin-top:8px;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content{
+  background: linear-gradient(135deg,#ffffff,#f0f4ff);
+  padding: 20px;
+  width: 320px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow:0 15px 30px rgba(0,0,0,0.3);
+  animation: pop 0.25s ease;
+}
+@keyframes pop{
+  from{
+    transform: scale(0.7);
+    opacity:0;
+  }
+  to{
+    transform: scale(1);
+    opacity:1;
+  }
+}
+.close{
+  cursor:pointer;
+  color:#e74c3c;
+  font-size:20px;
+}
+
+
+.close {
+  cursor: pointer;
+  color: red;
+  font-weight: bold;
+  float: right;
+}
+/* ===== Modal Animation ===== */
+@keyframes pop{
+  from{
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to{
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ===== Modal Content ใหม่ ===== */
+.modal-content{
+  background: linear-gradient(135deg,#ffffff,#f2f2f2);
+  padding: 25px;
+  width: 320px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  animation: pop 0.3s ease;
+}
+
+/* ===== สีตามชนิดธาตุ ===== */
+.modal-content.alkali{background:#ffebee}
+.modal-content.alkaline{background:#fff3e0}
+.modal-content.transition{background:#fffde7}
+.modal-content.metalloid{background:#e8f5e9}
+.modal-content.nonmetal{background:#e3f2fd}
+.modal-content.halogen{background:#e0f7fa}
+.modal-content.noble{background:#f3e5f5}
+.modal-content.lanth{background:#fce4ec}
+.modal-content.actin{background:#ede7f6}
+
+/* ===== ปุ่มปิด ===== */
+.close{
+  float:right;
+  font-size:18px;
+  padding:5px 8px;
+  border-radius:50%;
+}
+.close:hover{
+  background:#eee;
+}
+/* ===== Atomic Structure ===== */
+.atom{
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: 10px auto;
+}
+
+.nucleus{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 28px;
+  height: 28px;
+  background: #e53935;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.orbit{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border: 1px dashed #555;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.electron{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  background: #1e88e5;
+  border-radius: 50%;
+}
+/* ===== Color Legend ===== */
+.legend{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px,1fr));
+  gap: 8px;
+  max-width: 900px;
+  margin: 15px auto;
+  font-size: 13px;
+}
+
+.legend-item{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-color{
+  width: 20px;
+  height: 20px;
+  border: 1px solid #333;
+}
+
+
+.lg-alkali{background:#ffb3b3}
+.lg-alkaline{background:#ffd9b3}
+.lg-transition{background:#ffffb3}
+.lg-metalloid{background:#ccffcc}
+.lg-nonmetal{background:#b3e5ff}
+.lg-halogen{background:#b3ffff}
+.lg-noble{background:#e1bee7}
+.lg-lanth{background:#f8bbd0}
+.lg-actin{background:#d1c4e9}
+.periodic{
+  background:#ffffffcc;
+  padding:15px;
+  border-radius:15px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+
+</style>
+</head>
+
+<body>
+<h1>Periodic Table of Elements (118)</h1>
+<div class="legend">
+  <div class="legend-item">
+    <div class="legend-color lg-alkali"></div>
+    Alkali metal
+  </div>
+  <div class="legend-item">
+    <div class="legend-color lg-alkaline"></div>
+    Alkaline earth metal
+  </div>
+  <div class="legend-item">
+    <div class="legend-color lg-transition"></div>
+    Transition metal
+  </div>
+  <div class="legend-item">
+    <div class="legend-color lg-metalloid"></div>
+    Metalloid
+  </div>
+  <div class="legend-item">
+    <div class="legend-color lg-nonmetal"></div>
+    Non-metal
+  </div>
+  <div class="legend-item">
+    <div class="legend-color lg-halogen"></div>
+    Halogen
+  </div>
+  <div class="legend-item">
+    <div class="legend-color lg-noble"></div>
+    Noble gas
+  </div>
+  <div class="legend-item">
+    <div class="legend-color lg-lanth"></div>
+    Lanthanide
+  </div>
+  <div class="legend-item">
+    <div class="legend-color lg-actin"></div>
+    Actinide
+  </div>
+</div>
+
+<div class="periodic" id="table"></div>
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">✖</span>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+const E=[
+{n:1,s:"H",nm:"Hydrogen",w:"1.008",c:1,r:1,g:"nonmetal"},
+{n:2,s:"He",nm:"Helium",w:"4.0026",c:18,r:1,g:"noble"},
+
+{n:3,s:"Li",nm:"Lithium",w:"6.94",c:1,r:2,g:"alkali"},
+{n:4,s:"Be",nm:"Beryllium",w:"9.0122",c:2,r:2,g:"alkaline"},
+{n:5,s:"B",nm:"Boron",w:"10.81",c:13,r:2,g:"metalloid"},
+{n:6,s:"C",nm:"Carbon",w:"12.011",c:14,r:2,g:"nonmetal"},
+{n:7,s:"N",nm:"Nitrogen",w:"14.007",c:15,r:2,g:"nonmetal"},
+{n:8,s:"O",nm:"Oxygen",w:"15.999",c:16,r:2,g:"nonmetal"},
+{n:9,s:"F",nm:"Fluorine",w:"18.998",c:17,r:2,g:"halogen"},
+{n:10,s:"Ne",nm:"Neon",w:"20.180",c:18,r:2,g:"noble"},
+
+{n:11,s:"Na",nm:"Sodium",w:"22.990",c:1,r:3,g:"alkali"},
+{n:12,s:"Mg",nm:"Magnesium",w:"24.305",c:2,r:3,g:"alkaline"},
+{n:13,s:"Al",nm:"Aluminium",w:"26.982",c:13,r:3,g:"transition"},
+{n:14,s:"Si",nm:"Silicon",w:"28.085",c:14,r:3,g:"metalloid"},
+{n:15,s:"P",nm:"Phosphorus",w:"30.974",c:15,r:3,g:"nonmetal"},
+{n:16,s:"S",nm:"Sulfur",w:"32.06",c:16,r:3,g:"nonmetal"},
+{n:17,s:"Cl",nm:"Chlorine",w:"35.45",c:17,r:3,g:"halogen"},
+{n:18,s:"Ar",nm:"Argon",w:"39.948",c:18,r:3,g:"noble"},
+
+{n:19,s:"K",nm:"Potassium",w:"39.098",c:1,r:4,g:"alkali"},
+{n:20,s:"Ca",nm:"Calcium",w:"40.078",c:2,r:4,g:"alkaline"},
+{n:21,s:"Sc",nm:"Scandium",w:"44.956",c:3,r:4,g:"transition"},
+{n:22,s:"Ti",nm:"Titanium",w:"47.867",c:4,r:4,g:"transition"},
+{n:23,s:"V",nm:"Vanadium",w:"50.942",c:5,r:4,g:"transition"},
+{n:24,s:"Cr",nm:"Chromium",w:"51.996",c:6,r:4,g:"transition"},
+{n:25,s:"Mn",nm:"Manganese",w:"54.938",c:7,r:4,g:"transition"},
+{n:26,s:"Fe",nm:"Iron",w:"55.845",c:8,r:4,g:"transition"},
+{n:27,s:"Co",nm:"Cobalt",w:"58.933",c:9,r:4,g:"transition"},
+{n:28,s:"Ni",nm:"Nickel",w:"58.693",c:10,r:4,g:"transition"},
+{n:29,s:"Cu",nm:"Copper",w:"63.546",c:11,r:4,g:"transition"},
+{n:30,s:"Zn",nm:"Zinc",w:"65.38",c:12,r:4,g:"transition"},
+{n:31,s:"Ga",nm:"Gallium",w:"69.723",c:13,r:4,g:"transition"},
+{n:32,s:"Ge",nm:"Germanium",w:"72.630",c:14,r:4,g:"metalloid"},
+{n:33,s:"As",nm:"Arsenic",w:"74.922",c:15,r:4,g:"metalloid"},
+{n:34,s:"Se",nm:"Selenium",w:"78.971",c:16,r:4,g:"nonmetal"},
+{n:35,s:"Br",nm:"Bromine",w:"79.904",c:17,r:4,g:"halogen"},
+{n:36,s:"Kr",nm:"Krypton",w:"83.798",c:18,r:4,g:"noble"},
+
+{n:37,s:"Rb",nm:"Rubidium",w:"85.468",c:1,r:5,g:"alkali"},
+{n:38,s:"Sr",nm:"Strontium",w:"87.62",c:2,r:5,g:"alkaline"},
+{n:39,s:"Y",nm:"Yttrium",w:"88.906",c:3,r:5,g:"transition"},
+{n:40,s:"Zr",nm:"Zirconium",w:"91.224",c:4,r:5,g:"transition"},
+{n:41,s:"Nb",nm:"Niobium",w:"92.906",c:5,r:5,g:"transition"},
+{n:42,s:"Mo",nm:"Molybdenum",w:"95.95",c:6,r:5,g:"transition"},
+{n:43,s:"Tc",nm:"Technetium",w:"98",c:7,r:5,g:"transition"},
+{n:44,s:"Ru",nm:"Ruthenium",w:"101.07",c:8,r:5,g:"transition"},
+{n:45,s:"Rh",nm:"Rhodium",w:"102.91",c:9,r:5,g:"transition"},
+{n:46,s:"Pd",nm:"Palladium",w:"106.42",c:10,r:5,g:"transition"},
+{n:47,s:"Ag",nm:"Silver",w:"107.87",c:11,r:5,g:"transition"},
+{n:48,s:"Cd",nm:"Cadmium",w:"112.41",c:12,r:5,g:"transition"},
+{n:49,s:"In",nm:"Indium",w:"114.82",c:13,r:5,g:"transition"},
+{n:50,s:"Sn",nm:"Tin",w:"118.71",c:14,r:5,g:"transition"},
+{n:51,s:"Sb",nm:"Antimony",w:"121.76",c:15,r:5,g:"metalloid"},
+{n:52,s:"Te",nm:"Tellurium",w:"127.60",c:16,r:5,g:"metalloid"},
+{n:53,s:"I",nm:"Iodine",w:"126.90",c:17,r:5,g:"halogen"},
+{n:54,s:"Xe",nm:"Xenon",w:"131.29",c:18,r:5,g:"noble"},
+
+{n:55,s:"Cs",nm:"Cesium",w:"132.91",c:1,r:6,g:"alkali"},
+{n:56,s:"Ba",nm:"Barium",w:"137.33",c:2,r:6,g:"alkaline"},
+{n:57,s:"La",nm:"Lanthanum",w:"138.91",c:3,r:8,g:"lanth"},
+{n:58,s:"Ce",nm:"Cerium",w:"140.12",c:4,r:8,g:"lanth"},
+{n:59,s:"Pr",nm:"Praseodymium",w:"140.91",c:5,r:8,g:"lanth"},
+{n:60,s:"Nd",nm:"Neodymium",w:"144.24",c:6,r:8,g:"lanth"},
+{n:61,s:"Pm",nm:"Promethium",w:"145",c:7,r:8,g:"lanth"},
+{n:62,s:"Sm",nm:"Samarium",w:"150.36",c:8,r:8,g:"lanth"},
+{n:63,s:"Eu",nm:"Europium",w:"151.96",c:9,r:8,g:"lanth"},
+{n:64,s:"Gd",nm:"Gadolinium",w:"157.25",c:10,r:8,g:"lanth"},
+{n:65,s:"Tb",nm:"Terbium",w:"158.93",c:11,r:8,g:"lanth"},
+{n:66,s:"Dy",nm:"Dysprosium",w:"162.50",c:12,r:8,g:"lanth"},
+{n:67,s:"Ho",nm:"Holmium",w:"164.93",c:13,r:8,g:"lanth"},
+{n:68,s:"Er",nm:"Erbium",w:"167.26",c:14,r:8,g:"lanth"},
+{n:69,s:"Tm",nm:"Thulium",w:"168.93",c:15,r:8,g:"lanth"},
+{n:70,s:"Yb",nm:"Ytterbium",w:"173.05",c:16,r:8,g:"lanth"},
+{n:71,s:"Lu",nm:"Lutetium",w:"174.97",c:17,r:8,g:"lanth"},
+
+{n:72,s:"Hf",nm:"Hafnium",w:"178.49",c:4,r:6,g:"transition"},
+{n:73,s:"Ta",nm:"Tantalum",w:"180.95",c:5,r:6,g:"transition"},
+{n:74,s:"W",nm:"Tungsten",w:"183.84",c:6,r:6,g:"transition"},
+{n:75,s:"Re",nm:"Rhenium",w:"186.21",c:7,r:6,g:"transition"},
+{n:76,s:"Os",nm:"Osmium",w:"190.23",c:8,r:6,g:"transition"},
+{n:77,s:"Ir",nm:"Iridium",w:"192.22",c:9,r:6,g:"transition"},
+{n:78,s:"Pt",nm:"Platinum",w:"195.08",c:10,r:6,g:"transition"},
+{n:79,s:"Au",nm:"Gold",w:"196.97",c:11,r:6,g:"transition"},
+{n:80,s:"Hg",nm:"Mercury",w:"200.59",c:12,r:6,g:"transition"},
+{n:81,s:"Tl",nm:"Thallium",w:"204.38",c:13,r:6,g:"transition"},
+{n:82,s:"Pb",nm:"Lead",w:"207.2",c:14,r:6,g:"transition"},
+{n:83,s:"Bi",nm:"Bismuth",w:"208.98",c:15,r:6,g:"transition"},
+{n:84,s:"Po",nm:"Polonium",w:"209",c:16,r:6,g:"metalloid"},
+{n:85,s:"At",nm:"Astatine",w:"210",c:17,r:6,g:"halogen"},
+{n:86,s:"Rn",nm:"Radon",w:"222",c:18,r:6,g:"noble"},
+
+{n:87,s:"Fr",nm:"Francium",w:"223",c:1,r:7,g:"alkali"},
+{n:88,s:"Ra",nm:"Radium",w:"226",c:2,r:7,g:"alkaline"},
+{n:89,s:"Ac",nm:"Actinium",w:"227",c:3,r:9,g:"actin"},
+{n:90,s:"Th",nm:"Thorium",w:"232.04",c:4,r:9,g:"actin"},
+{n:91,s:"Pa",nm:"Protactinium",w:"231.04",c:5,r:9,g:"actin"},
+{n:92,s:"U",nm:"Uranium",w:"238.03",c:6,r:9,g:"actin"},
+{n:93,s:"Np",nm:"Neptunium",w:"237",c:7,r:9,g:"actin"},
+{n:94,s:"Pu",nm:"Plutonium",w:"244",c:8,r:9,g:"actin"},
+{n:95,s:"Am",nm:"Americium",w:"243",c:9,r:9,g:"actin"},
+{n:96,s:"Cm",nm:"Curium",w:"247",c:10,r:9,g:"actin"},
+{n:97,s:"Bk",nm:"Berkelium",w:"247",c:11,r:9,g:"actin"},
+{n:98,s:"Cf",nm:"Californium",w:"251",c:12,r:9,g:"actin"},
+{n:99,s:"Es",nm:"Einsteinium",w:"252",c:13,r:9,g:"actin"},
+{n:100,s:"Fm",nm:"Fermium",w:"257",c:14,r:9,g:"actin"},
+{n:101,s:"Md",nm:"Mendelevium",w:"258",c:15,r:9,g:"actin"},
+{n:102,s:"No",nm:"Nobelium",w:"259",c:16,r:9,g:"actin"},
+{n:103,s:"Lr",nm:"Lawrencium",w:"266",c:17,r:9,g:"actin"},
+
+{n:104,s:"Rf",nm:"Rutherfordium",w:"267",c:4,r:7,g:"transition"},
+{n:105,s:"Db",nm:"Dubnium",w:"268",c:5,r:7,g:"transition"},
+{n:106,s:"Sg",nm:"Seaborgium",w:"269",c:6,r:7,g:"transition"},
+{n:107,s:"Bh",nm:"Bohrium",w:"270",c:7,r:7,g:"transition"},
+{n:108,s:"Hs",nm:"Hassium",w:"270",c:8,r:7,g:"transition"},
+{n:109,s:"Mt",nm:"Meitnerium",w:"278",c:9,r:7,g:"transition"},
+{n:110,s:"Ds",nm:"Darmstadtium",w:"281",c:10,r:7,g:"transition"},
+{n:111,s:"Rg",nm:"Roentgenium",w:"282",c:11,r:7,g:"transition"},
+{n:112,s:"Cn",nm:"Copernicium",w:"285",c:12,r:7,g:"transition"},
+{n:113,s:"Nh",nm:"Nihonium",w:"286",c:13,r:7,g:"transition"},
+{n:114,s:"Fl",nm:"Flerovium",w:"289",c:14,r:7,g:"transition"},
+{n:115,s:"Mc",nm:"Moscovium",w:"290",c:15,r:7,g:"transition"},
+{n:116,s:"Lv",nm:"Livermorium",w:"293",c:16,r:7,g:"transition"},
+{n:117,s:"Ts",nm:"Tennessine",w:"294",c:17,r:7,g:"halogen"},
+{n:118,s:"Og",nm:"Oganesson",w:"294",c:18,r:7,g:"noble"}
+];
+
+const t=document.getElementById("table");
+E.forEach(e=>{
+  const d=document.createElement("div");
+  d.className="el "+e.g;
+  d.style.gridColumn=e.c;
+  d.style.gridRow=e.r;
+  d.innerHTML=`
+    <div class="no">${e.n}</div>
+    <div class="sym">${e.s}</div>
+    <div class="w">${e.w}</div>
+    <div class="name">${e.nm}</div>`;
+  d.onclick = () => openModal(e);
+t.appendChild(d);
+});
+const modal = document.getElementById("modal");
+const modalBody = document.getElementById("modal-body");
+
+function openModal(e){
+  const box = modal.querySelector(".modal-content");
+  box.className = "modal-content " + e.g;
+
+  modalBody.innerHTML = `
+    <h2>${e.s}</h2>
+    <p><b>${e.nm}</b></p>
+    <hr>
+    <p><b>เลขอะตอม:</b> ${e.n}</p>
+    <p><b>น้ำหนักอะตอม:</b> ${e.w}</p>
+    <p><b>ประเภท:</b> ${e.g}</p>
+  `;
+  modal.style.display = "flex";
+}
+
+
+function closeModal(){
+  modal.style.display = "none";
+}
+
+modal.onclick = (e)=>{
+  if(e.target === modal) closeModal();
+};
+if(!modal) console.error("Modal not found");
+function openModal(e){
+  const box = modal.querySelector(".modal-content");
+  box.className = "modal-content " + e.g;
+
+  // แจกอิเล็กตรอนแบบ Bohr (ง่าย + เหมาะเรียน)
+  const shells = [];
+  let electrons = e.n;
+  const maxShell = [2,8,18,32];
+
+  for(let m of maxShell){
+    if(electrons > 0){
+      shells.push(Math.min(m, electrons));
+      electrons -= m;
+    }
+  }
+
+  let orbitsHTML = "";
+
+  shells.forEach((count, i) => {
+    const size = 60 + i * 35;
+    let electronsHTML = "";
+
+    for(let j = 0; j < count; j++){
+      const angle = (360 / count) * j;
+      electronsHTML += `
+        <div class="electron"
+          style="
+            transform:
+              translate(-50%, -50%)
+              rotate(${angle}deg)
+              translate(${size/2}px);
+          ">
+        </div>`;
+    }
+
+    orbitsHTML += `
+      <div class="orbit" style="width:${size}px;height:${size}px">
+        ${electronsHTML}
+      </div>
+    `;
+  });
+
+  modalBody.innerHTML = `
+    <h2>${e.s}</h2>
+
+    <div class="atom">
+      <div class="nucleus">${e.n}</div>
+      ${orbitsHTML}
+    </div>
+
+    <p><b>${e.nm}</b></p>
+    <hr>
+    <p><b>เลขอะตอม:</b> ${e.n}</p>
+    <p><b>น้ำหนักอะตอม:</b> ${e.w}</p>
+    <p><b>ประเภท:</b> ${e.g}</p>
+  `;
+
+  modal.style.display = "flex";
+}
+
+
+</script>
+</body>
+</html>
